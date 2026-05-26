@@ -6,470 +6,297 @@
 <title>Say This Instead</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0e0e0e;
-  --surface: #161616;
-  --surface2: #1e1e1e;
-  --border: #2a2a2a;
-  --text: #f0ede6;
-  --text-dim: #888;
-  --text-dimmer: #555;
-  --accent: #d4a84b;
-  --accent-dim: rgba(212,168,75,0.12);
-  --red: #c0392b;
-  --green: #27ae60;
-
-  --cat-presence: #4a90d9;
-  --cat-ownership: #9b59b6;
-  --cat-confidence: #27ae60;
-  --cat-escalate: #e67e22;
-  --cat-ground: #c0392b;
+:root{
+  --bg:#0e0e0e;
+  --t-surface:#161616;--t-surface2:#1f1f1f;--t-border:#2a2a2a;
+  --t-text:#f0ede6;--t-dim:#888;--t-dimmer:#4a4a4a;
+  --v-surface:#EDE6D6;--v-surface2:#E2DAC8;--v-border:#C8BFA8;
+  --v-text:#1C1814;--v-dim:#6B6258;--v-dimmer:#A09690;
+  --accent:#d4a84b;
+  --presence:#4a90d9;--ownership:#9b59b6;--confidence:#27ae60;
+  --escalate:#e67e22;--ground:#c0392b;
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-}
-
-/* ── Header ── */
-header {
-  padding: 28px 32px 0;
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-}
-.logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-.logo span { color: var(--accent); font-style: italic; }
-.deck-count {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--text-dimmer);
-  letter-spacing: 0.08em;
-}
-
-/* ── Filters ── */
-.filters {
-  padding: 20px 32px 0;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.filter-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
-}
-.filter-btn:hover { border-color: var(--text-dim); color: var(--text); }
-.filter-btn.active {
-  color: var(--bg);
-  border-color: transparent;
-  font-weight: 500;
-}
-.filter-btn[data-cat="all"].active { background: var(--text); }
-.filter-btn[data-cat="presence"].active { background: var(--cat-presence); }
-.filter-btn[data-cat="ownership"].active { background: var(--cat-ownership); }
-.filter-btn[data-cat="confidence"].active { background: var(--cat-confidence); }
-.filter-btn[data-cat="escalate"].active { background: var(--cat-escalate); }
-.filter-btn[data-cat="ground"].active { background: var(--cat-ground); }
-
-/* ── Stage ── */
-.stage {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 24px;
-  min-height: 420px;
-}
-
-/* ── Card ── */
-.card-wrap {
-  width: 100%;
-  max-width: 560px;
-  perspective: 1200px;
-  cursor: pointer;
-}
-.card {
-  width: 100%;
-  min-height: 320px;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.card.flipped { transform: rotateY(180deg); }
-
-.card-face {
-  position: absolute;
-  width: 100%;
-  min-height: 320px;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-/* Front */
-.card-front {
-  background: var(--surface);
-  display: flex;
-  flex-direction: column;
-}
-.card-front-top {
-  padding: 24px 28px 20px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.card-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dimmer);
-  margin-bottom: 14px;
-}
-.card-main-text {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(18px, 4vw, 26px);
-  line-height: 1.4;
-  color: var(--text);
-  flex: 1;
-}
-.card-front-bottom {
-  padding: 14px 28px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.cat-tag {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-}
-.cat-presence { background: rgba(74,144,217,0.15); color: var(--cat-presence); }
-.cat-ownership { background: rgba(155,89,182,0.15); color: var(--cat-ownership); }
-.cat-confidence { background: rgba(39,174,96,0.15); color: var(--cat-confidence); }
-.cat-escalate { background: rgba(230,126,34,0.15); color: var(--cat-escalate); }
-.cat-ground { background: rgba(192,57,43,0.15); color: var(--cat-ground); }
-
-.flip-hint {
-  font-size: 11px;
-  color: var(--text-dimmer);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.flip-hint svg { opacity: 0.5; }
-
-/* Back */
-.card-back {
-  background: var(--surface2);
-  transform: rotateY(180deg);
-  display: flex;
-  flex-direction: column;
-  min-height: 320px;
-}
-.card-back-section {
-  padding: 20px 28px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.card-back-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dimmer);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.card-back-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-dim);
-  font-style: italic;
-}
-.card-back-insight {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text);
-}
-.divider-line {
-  height: 1px;
-  background: var(--border);
-  margin: 0 28px;
-}
-
-/* ── Nav ── */
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 24px;
-}
-.nav-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-dim);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  font-size: 18px;
-}
-.nav-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.nav-btn:disabled { opacity: 0.25; cursor: default; }
-.nav-counter {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: var(--text-dim);
-  min-width: 56px;
-  text-align: center;
-  letter-spacing: 0.06em;
-}
-
-/* ── Progress bar ── */
-.progress-track {
-  width: 100%;
-  max-width: 560px;
-  height: 2px;
-  background: var(--border);
-  border-radius: 2px;
-  margin-top: 20px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-/* ── Empty ── */
-.empty-state {
-  text-align: center;
-  color: var(--text-dimmer);
-  font-size: 14px;
-  padding: 60px 0;
-}
-
-/* ── Keyboard hint ── */
-.kb-hint {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-dimmer);
-  padding: 0 0 28px;
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 0.05em;
-}
-kbd {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-size: 10px;
-  font-family: 'DM Mono', monospace;
-}
-
-/* ── Mobile ── */
-@media (max-width: 480px) {
-  header { padding: 20px 20px 0; }
-  .filters { padding: 16px 20px 0; }
-  .stage { padding: 24px 16px; }
-  .card-front-top, .card-back-section { padding: 18px 20px; }
-  .card-front-bottom { padding: 12px 20px; }
-  .divider-line { margin: 0 20px; }
-  .kb-hint { display: none; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t-text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+header{padding:26px 28px 0;display:flex;align-items:baseline;gap:14px}
+.logo{font-family:'DM Serif Display',serif;font-size:21px;letter-spacing:-.02em}
+.logo em{color:var(--accent);font-style:italic}
+.deck-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--t-dimmer);letter-spacing:.08em}
+.filter-section{padding:18px 28px 0;display:flex;flex-direction:column;gap:10px}
+.filter-row{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.filter-row-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t-dimmer);min-width:64px;padding-top:5px}
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap}
+.fp{font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:.5px solid var(--t-border);background:transparent;color:var(--t-dim);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fp:hover{border-color:var(--t-dim);color:var(--t-text)}
+.fp.active{background:var(--t-text);color:var(--bg);border-color:var(--t-text)}
+.fp[data-v="transcript"].active{background:var(--accent);color:#0e0e0e;border-color:var(--accent)}
+.fp[data-v="vocab"].active{background:#c5d9f0;color:#0e2a44;border-color:#c5d9f0}
+.fp[data-v="presence"].active{background:var(--presence);color:#fff;border-color:var(--presence)}
+.fp[data-v="ownership"].active{background:var(--ownership);color:#fff;border-color:var(--ownership)}
+.fp[data-v="confidence"].active{background:var(--confidence);color:#fff;border-color:var(--confidence)}
+.fp[data-v="escalate"].active{background:var(--escalate);color:#fff;border-color:var(--escalate)}
+.fp[data-v="ground"].active{background:var(--ground);color:#fff;border-color:var(--ground)}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;min-height:400px}
+.card-wrap{width:100%;max-width:560px;perspective:1200px;cursor:pointer}
+.card{width:100%;min-height:330px;position:relative;transform-style:preserve-3d;transition:transform .52s cubic-bezier(.4,0,.2,1)}
+.card.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;width:100%;min-height:330px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card-front.transcript{background:var(--t-surface);border:.5px solid var(--t-border)}
+.card-back.transcript{background:var(--t-surface2);border:.5px solid var(--t-border);transform:rotateY(180deg)}
+.card-front.vocab{background:var(--v-surface);border:.5px solid var(--v-border)}
+.card-back.vocab{background:var(--v-surface2);border:.5px solid var(--v-border);transform:rotateY(180deg)}
+.cf-top{padding:22px 26px 18px;flex:1;display:flex;flex-direction:column}
+.card-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+.transcript .card-label{color:var(--t-dimmer)}
+.vocab .card-label{color:var(--v-dimmer)}
+.main-text{font-family:'DM Serif Display',serif;font-size:clamp(16px,3.5vw,24px);line-height:1.45;flex:1}
+.transcript .main-text{color:var(--t-text)}
+.vocab .main-text{color:var(--v-text)}
+.cf-bottom{padding:12px 26px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.transcript .cf-bottom{border-top:.5px solid var(--t-border)}
+.vocab .cf-bottom{border-top:.5px solid var(--v-border)}
+.cat-tag,.occ-tag{font-size:11px;font-weight:500;letter-spacing:.04em;padding:3px 9px;border-radius:20px}
+.cat-presence{background:rgba(74,144,217,.15);color:var(--presence)}
+.cat-ownership{background:rgba(155,89,182,.15);color:var(--ownership)}
+.cat-confidence{background:rgba(39,174,96,.15);color:var(--confidence)}
+.cat-escalate{background:rgba(230,126,34,.15);color:var(--escalate)}
+.cat-ground{background:rgba(192,57,43,.15);color:var(--ground)}
+.occ-tag{background:rgba(255,255,255,.07);color:var(--t-dim)}
+.vocab .occ-tag{background:rgba(0,0,0,.08);color:var(--v-dim)}
+.tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.src-badge{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.src-transcript{background:rgba(212,168,75,.18);color:var(--accent)}
+.src-vocab{background:rgba(180,210,240,.15);color:#7aabda}
+.vocab .src-vocab{background:rgba(74,144,217,.15);color:#185fa5}
+.flip-hint{font-size:11px;color:var(--t-dimmer)}
+.vocab .flip-hint{color:var(--v-dimmer)}
+.cb-section{padding:18px 26px;flex:1;display:flex;flex-direction:column;gap:6px}
+.cb-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.transcript .cb-label{color:var(--t-dimmer)}
+.vocab .cb-label{color:var(--v-dimmer)}
+.cb-insight{font-size:13px;line-height:1.65}
+.transcript .cb-insight{color:var(--t-text)}
+.vocab .cb-insight{color:var(--v-text)}
+.cb-said{font-size:13px;line-height:1.55;font-style:italic}
+.transcript .cb-said{color:var(--t-dim)}
+.vocab .cb-said{color:var(--v-dim)}
+.cb-div{height:.5px;margin:0 26px}
+.transcript .cb-div{background:var(--t-border)}
+.vocab .cb-div{background:var(--v-border)}
+.progress-track{width:100%;max-width:560px;height:2px;background:var(--t-border);border-radius:2px;margin-top:18px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
+.nav{display:flex;align-items:center;gap:18px;margin-top:18px}
+.nav-btn{width:42px;height:42px;border-radius:50%;border:.5px solid var(--t-border);background:transparent;color:var(--t-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:17px}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.nav-btn:disabled{opacity:.2;cursor:default}
+.nav-counter{font-family:'DM Mono',monospace;font-size:13px;color:var(--t-dim);min-width:52px;text-align:center;letter-spacing:.06em}
+.shuffle-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border:.5px solid var(--t-border);border-radius:6px;background:transparent;color:var(--t-dimmer);cursor:pointer;transition:all .15s;margin-left:6px}
+.shuffle-btn:hover{border-color:var(--t-dim);color:var(--t-dim)}
+.empty-state{color:var(--t-dim);font-size:14px;text-align:center;padding:60px 0;width:100%}
+.kb-hint{text-align:center;font-size:11px;color:var(--t-dimmer);padding:0 0 24px;font-family:'DM Mono',monospace;letter-spacing:.05em}
+kbd{background:var(--t-surface);border:.5px solid var(--t-border);border-radius:4px;padding:1px 5px;font-size:10px;font-family:'DM Mono',monospace}
+@media(max-width:480px){
+  header{padding:18px 18px 0}
+  .filter-section{padding:14px 18px 0}
+  .filter-row-label{min-width:48px;font-size:9px}
+  .stage{padding:20px 14px}
+  .cf-top,.cb-section{padding:16px 18px}
+  .cf-bottom{padding:10px 18px}
+  .cb-div{margin:0 18px}
+  .kb-hint{display:none}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Say This <span>Instead</span></div>
+  <div class="logo">Say This <em>Instead</em></div>
   <div class="deck-count" id="deck-label"></div>
 </header>
 
-<div class="filters">
-  <button class="filter-btn active" data-cat="all" onclick="setFilter('all')">All</button>
-  <button class="filter-btn" data-cat="presence" onclick="setFilter('presence')">Meeting presence</button>
-  <button class="filter-btn" data-cat="ownership" onclick="setFilter('ownership')">Ownership</button>
-  <button class="filter-btn" data-cat="confidence" onclick="setFilter('confidence')">Confidence</button>
-  <button class="filter-btn" data-cat="escalate" onclick="setFilter('escalate')">Escalate</button>
-  <button class="filter-btn" data-cat="ground" onclick="setFilter('ground')">Hold ground</button>
+<div class="filter-section">
+  <div class="filter-row">
+    <span class="filter-row-label">source</span>
+    <div class="filter-pills" id="src-pills">
+      <button class="fp active" data-v="all" onclick="setSrc(this,'all')">All</button>
+      <button class="fp" data-v="transcript" onclick="setSrc(this,'transcript')">From my transcripts</button>
+      <button class="fp" data-v="vocab" onclick="setSrc(this,'vocab')">Vocabulary builders</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-row-label">behavior</span>
+    <div class="filter-pills" id="cat-pills">
+      <button class="fp active" data-v="all" onclick="setCat(this,'all')">All</button>
+      <button class="fp" data-v="presence" onclick="setCat(this,'presence')">Presence</button>
+      <button class="fp" data-v="ownership" onclick="setCat(this,'ownership')">Ownership</button>
+      <button class="fp" data-v="confidence" onclick="setCat(this,'confidence')">Confidence</button>
+      <button class="fp" data-v="escalate" onclick="setCat(this,'escalate')">Escalate</button>
+      <button class="fp" data-v="ground" onclick="setCat(this,'ground')">Hold ground</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-row-label">occasion</span>
+    <div class="filter-pills" id="occ-pills">
+      <button class="fp active" data-v="all" onclick="setOcc(this,'all')">All</button>
+      <button class="fp" data-v="mgr1on1" onclick="setOcc(this,'mgr1on1')">Manager 1:1</button>
+      <button class="fp" data-v="leadership" onclick="setOcc(this,'leadership')">Presenting to leadership</button>
+      <button class="fp" data-v="meeting" onclick="setOcc(this,'meeting')">Running a meeting</button>
+      <button class="fp" data-v="status" onclick="setOcc(this,'status')">Status update</button>
+      <button class="fp" data-v="feedback" onclick="setOcc(this,'feedback')">Receiving feedback</button>
+      <button class="fp" data-v="defend" onclick="setOcc(this,'defend')">Defending your position</button>
+      <button class="fp" data-v="badnews" onclick="setOcc(this,'badnews')">Reporting bad news</button>
+      <button class="fp" data-v="crossfunc" onclick="setOcc(this,'crossfunc')">Cross-functional</button>
+      <button class="fp" data-v="knowledge" onclick="setOcc(this,'knowledge')">Knowledge gap</button>
+      <button class="fp" data-v="expectations" onclick="setOcc(this,'expectations')">Setting expectations</button>
+    </div>
+  </div>
 </div>
 
 <div class="stage">
   <div class="card-wrap" id="card-wrap" onclick="flipCard()">
     <div class="card" id="card">
-      <div class="card-face card-front">
-        <div class="card-front-top">
+      <div class="card-face card-front transcript" id="cf">
+        <div class="cf-top">
           <div class="card-label">Say this instead</div>
-          <div class="card-main-text" id="front-text"></div>
+          <div class="main-text" id="front-text"></div>
         </div>
-        <div class="card-front-bottom">
-          <span class="cat-tag" id="front-cat"></span>
-          <span class="flip-hint">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8.5 2.5L10 4l-1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            flip
-          </span>
+        <div class="cf-bottom">
+          <div class="tags">
+            <span class="cat-tag" id="front-cat"></span>
+            <span class="occ-tag" id="front-occ"></span>
+          </div>
+          <span class="src-badge" id="front-src"></span>
+          <span class="flip-hint" id="flip-hint">flip &#8635;</span>
         </div>
       </div>
-      <div class="card-face card-back">
-        <div class="card-back-section">
-          <div class="card-back-label">
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="5" r="3" stroke="#d4a84b" stroke-width="1.2"/><path d="M5.5 8v1.5a1 1 0 002 0V8" stroke="#d4a84b" stroke-width="1.2" stroke-linecap="round"/></svg>
-            Insight
-          </div>
-          <div class="card-back-insight" id="back-insight"></div>
+      <div class="card-face card-back transcript" id="cb">
+        <div class="cb-section">
+          <div class="cb-label">&#128161; insight</div>
+          <div class="cb-insight" id="back-insight"></div>
         </div>
-        <div class="divider-line"></div>
-        <div class="card-back-section" style="flex:0">
-          <div class="card-back-label">Said</div>
-          <div class="card-back-text" id="back-said"></div>
+        <div class="cb-div"></div>
+        <div class="cb-section" style="flex:0;padding-bottom:22px">
+          <div class="cb-label">said</div>
+          <div class="cb-said" id="back-said"></div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="progress-track">
-    <div class="progress-fill" id="progress"></div>
-  </div>
-
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
   <div class="nav">
-    <button class="nav-btn" id="btn-prev" onclick="go(-1)" title="Previous">&#8592;</button>
+    <button class="nav-btn" id="btn-prev" onclick="go(-1)">&#8592;</button>
     <div class="nav-counter" id="counter"></div>
-    <button class="nav-btn" id="btn-next" onclick="go(1)" title="Next">&#8594;</button>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">&#8594;</button>
+    <button class="shuffle-btn" onclick="shuffle()">shuffle</button>
   </div>
 </div>
 
-<div class="kb-hint">
-  <kbd>←</kbd> <kbd>→</kbd> navigate &nbsp;·&nbsp; <kbd>space</kbd> flip
-</div>
+<div class="kb-hint"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd> navigate &nbsp;&#183;&nbsp; <kbd>space</kbd> flip &nbsp;&#183;&nbsp; <kbd>s</kbd> shuffle</div>
 
 <script>
-const CARDS = [
-  {cat:"presence",after:"Here's what I need your input on today — three items. (Then lead.)",insight:"Arrive at every Mike 1:1 with a doc or agenda you drive. No doc = you don't own the meeting.",before:"I mean, I don't have anything to present. I just have a like a list of going through.",situation:"Arriving at Mike 1:1 without an agenda"},
-  {cat:"ownership",after:"The Rama/Brian/Blake conflict is blocking decisions. I need you to clarify who has architectural authority this week — I can't resolve it at my level.",insight:"Never narrate dysfunction as something happening to you. Name it, make the ask, move on.",before:"I've sort of been led to the slaughter.",situation:"Describing the engineering conflict to Mike"},
-  {cat:"confidence",after:"We're at 22,174 active merchants, up ~3% MoM. I have an open question on Dec–Jan data integrity I'm resolving with BI.",insight:"Lead with a number. State what you know, then name what you're still validating.",before:"...it just it looked like we were, you know, incrementally on the rise.",situation:"Reporting on product metrics to Mike"},
-  {cat:"escalate",after:"This is a Q2 risk. I need a decision on approach by Friday so I can reforecast. I'm flagging it now.",insight:'Every blocker needs a deadline and a specific ask. "Remains to be seen" is not an escalation.',before:"Whether or not that challenges Q2 or not is remains to be seen.",situation:"Mentioning Q2 risk in standup"},
-  {cat:"ground",after:"I hear that people are confused — I own the communication gap. My read on why is different. Can I walk you through it?",insight:"Acknowledge the concern. Don't abandon the position. Capitulation is not resolution.",before:"That's simply not possible... [45 seconds later] Okay that's fine, I get it.",situation:"Under pushback from Mike on alignment confusion"},
-  {cat:"ownership",after:"Mike, I need you to reset authority among Rama, Brian, and Blake. My recommendation: [X] has final call on architecture. Can you make that explicit?",insight:"Narrating a conflict is not managing it. Bring a recommendation and a specific ask.",before:"...basically them fighting right in front of me... what the fuck are we doing here?",situation:"Describing engineers fighting in front of him"},
-  {cat:"escalate",after:"Root cause was missing architecture diagrams. I've made that a hard launch gate starting next sprint. I'll report back after the next release.",insight:"Problem → root cause → fix → checkpoint date. Every time.",before:"So far, I've raised it as a topic for improvements within the retro... although we haven't seen it yet.",situation:"Asked what he's doing about recurring release failures"},
-  {cat:"confidence",after:"Transaction source breakdown is more useful for transaction counts than merchant counts — it won't explain the December jump.",insight:"Drop the preamble. State the insight. Let the room respond.",before:"Wait, wait, my, am I thinking about this wrong? Like, like, the fact that so it seems like this subdivision into transaction source is going to be more valuable...",situation:"Proposing a data insight to Mike"},
-  {cat:"presence",after:"I run kickoffs for anything this size. Today's goal: make sure everyone understands what we're building, why, and what's open. Let's get into it.",insight:"Owners communicate decisions, not deliberations. The moment you explain why you're doing your job, you've signaled uncertainty about your right to do it.",before:"this is something that I do, or I've been trying to do, for larger projects and initiatives, is to have just a kickoff call so that everyone on the team...",situation:"Opening the Canada Rewards kickoff"},
-  {cat:"confidence",after:"Dollar discount and percentage discount — Frank, confirm I have that right. (Don't narrate your own forgetting.)",insight:"Credibility is destroyed fastest by signaling to the room that you're surprised you don't know it. Recover without commentary.",before:"I haven't burned it into my memory. What it is, I think it's price discount and percentage discount. Let me pause there.",situation:"Forgetting reward type names mid-kickoff"},
-  {cat:"escalate",after:"I want to flag something: my compliance call got rescheduled. That's the dependency for consent language, unsubscribe flows, and the free-item reward type. Until that's resolved, those items are blocked. If it slips, it becomes a timeline risk.",insight:"A blocker that isn't named as a blocker doesn't get treated as one.",before:"I actually had a call with legal compliance today, which has been rescheduled, but that's just a word of context there.",situation:"Mentioning the postponed compliance call"},
-  {cat:"presence",after:"Here's what I need out of today: architecture locked, and a milestone plan from Rama by end of next week — sprint start date, Q target. Can we commit to that before we close?",insight:"Product owns the outcome. Name the decision, pressure-test the timeline, drive to a close.",before:"I just want to confirm that's something the way that we get there is like beginning next week with Card Free.",situation:"Closing an architecture meeting with a confirmation request"},
-  {cat:"ownership",after:"The engineering team can't give me a committed date. I've been unable to break the logjam between Rama and Dinesh. I need you to apply pressure with Dolly. Specifically: I need a hard date for Canada by Friday. Can you make that happen?",insight:'"Raising awareness" is not a PM ask — it\'s a status update with a shrug. When you escalate, make the ask explicit.',before:"There isn't any real action item, I think other than raising awareness, basically, you know, I'm looking for commitments from engineering now that we're nearing the end of the quarter.",situation:"Framing the engineering commitment issue to Mike"},
-  {cat:"confidence",after:"I don't have that confirmed. My working assumption is yes — data gets lost in the merge. I'll verify with engineering and get you a clear answer before end of day.",insight:"State the assumption, name the gap, commit to closing it. Stop auditing your own reliability out loud.",before:"I'm trying to give you like some, like some usable information, like that. You have to take everything with a grain of salt...",situation:"Answering a question about data loss with audited uncertainty"},
-  {cat:"confidence",after:"(Nothing. Submit the goals. If Mike identifies gaps, address them. Don't audit your own work unprompted.)",insight:"Pre-emptive self-criticism is not humility — it's a bid for reassurance. It invites your manager to manage you.",before:"spent, you know, couple hours in one day to over doing that, so it's probably not as broad and deep as it needs to be.",situation:"Introducing the goals doc to Mike"},
-  {cat:"ground",after:"Noted — I'll lead with the ask.",insight:"When your manager gives you live feedback, receive it, don't contextualize it. Agreement and adjustment is the move.",before:"I was trying to get David up to speed. [defense in response to live coaching]",situation:"Mike gives live feedback; Jason explains context instead of receiving it"}
+const OCC={mgr1on1:'Manager 1:1',leadership:'Presenting to leadership',meeting:'Running a meeting',status:'Status update',feedback:'Receiving feedback',defend:'Defending your position',badnews:'Reporting bad news',crossfunc:'Cross-functional',knowledge:'Knowledge gap',expectations:'Setting expectations'};
+const CAT={presence:'Presence',ownership:'Ownership',confidence:'Confidence',escalate:'Escalate',ground:'Hold ground'};
+const CARDS=[
+{id:'t1',src:'transcript',cat:'presence',occ:'mgr1on1',after:"Here's what I need your input on today — three items. (Then lead.)",insight:"Arrive at every 1:1 with a doc or agenda you drive. No doc = you don't own the meeting.",before:"I mean, I don't have anything to present. I just have a like a list of going through."},
+{id:'t2',src:'transcript',cat:'ownership',occ:'mgr1on1',after:"The Rama/Brian/Blake conflict is blocking decisions. I need you to clarify who has architectural authority this week — I can't resolve it at my level.",insight:"Never narrate dysfunction as something happening to you. Name it, make the ask, move on.",before:"I've sort of been led to the slaughter."},
+{id:'t3',src:'transcript',cat:'confidence',occ:'mgr1on1',after:"We're at 22,174 active merchants, up ~3% MoM. I have an open question on Dec–Jan data integrity I'm resolving with BI.",insight:"Lead with a number. State what you know, then name what you're still validating.",before:"...it just it looked like we were, you know, incrementally on the rise."},
+{id:'t4',src:'transcript',cat:'escalate',occ:'status',after:"This is a Q2 risk. I need a decision on approach by Friday so I can reforecast. I'm flagging it now.",insight:'Every blocker needs a deadline and a specific ask. "Remains to be seen" is not an escalation.',before:"Whether or not that challenges Q2 or not is remains to be seen."},
+{id:'t5',src:'transcript',cat:'ground',occ:'mgr1on1',after:"I hear that people are confused — I own the communication gap. My read on why is different. Can I walk you through it?",insight:"Acknowledge the concern. Don't abandon the position. Capitulation is not resolution.",before:"That's simply not possible... [45 seconds later] Okay that's fine, I get it."},
+{id:'t6',src:'transcript',cat:'ownership',occ:'mgr1on1',after:"Mike, I need you to reset authority among Rama, Brian, and Blake. My recommendation: [X] has final call on architecture. Can you make that explicit?",insight:"Narrating a conflict is not managing it. Bring a recommendation and a specific ask.",before:"...basically them fighting right in front of me... what the fuck are we doing here?"},
+{id:'t7',src:'transcript',cat:'escalate',occ:'mgr1on1',after:"Root cause was missing architecture diagrams. I've made that a hard launch gate starting next sprint. I'll report back after the next release.",insight:"Problem → root cause → fix → checkpoint date. Every time.",before:"So far, I've raised it as a topic for improvements within the retro... although we haven't seen it yet."},
+{id:'t8',src:'transcript',cat:'confidence',occ:'mgr1on1',after:"Transaction source breakdown is more useful for transaction counts than merchant counts — it won't explain the December jump.",insight:"Drop the preamble. State the insight. Let the room respond.",before:"Wait, wait, my, am I thinking about this wrong? Like, the fact that so it seems like this subdivision into transaction source is going to be more valuable..."},
+{id:'t9',src:'transcript',cat:'presence',occ:'meeting',after:"I run kickoffs for anything this size. Today's goal: make sure everyone understands what we're building, why, and what's open. Let's get into it.",insight:"Owners communicate decisions, not deliberations. The moment you explain why you're doing your job, you've signaled uncertainty about your right to do it.",before:"this is something that I do, or I've been trying to do, for larger projects and initiatives, is to have just a kickoff call so that everyone on the team..."},
+{id:'t10',src:'transcript',cat:'confidence',occ:'meeting',after:"Dollar discount and percentage discount — Frank, confirm I have that right. (Don't narrate your own forgetting.)",insight:"Credibility is destroyed fastest by signaling to the room that you're surprised you don't know it. Recover without commentary.",before:"I haven't burned it into my memory. What it is, I think it's price discount and percentage discount. Let me pause there."},
+{id:'t11',src:'transcript',cat:'escalate',occ:'status',after:"I want to flag something: my compliance call got rescheduled. That's the dependency for consent language, unsubscribe flows, and the free-item reward type. Until that's resolved, those items are blocked. If it slips, it becomes a timeline risk.",insight:"A blocker that isn't named as a blocker doesn't get treated as one.",before:"I actually had a call with legal compliance today, which has been rescheduled, but that's just a word of context there."},
+{id:'t12',src:'transcript',cat:'presence',occ:'meeting',after:"Here's what I need out of today: architecture locked, and a milestone plan from Rama by end of next week — sprint start date, Q target. Can we commit to that before we close?",insight:"Product owns the outcome. Name the decision, pressure-test the timeline, drive to a close.",before:"I just want to confirm that's something the way that we get there is like beginning next week with Card Free."},
+{id:'t13',src:'transcript',cat:'ownership',occ:'mgr1on1',after:"The engineering team can't give me a committed date. I've been unable to break the logjam between Rama and Dinesh. I need you to apply pressure with Dolly. Specifically: I need a hard date for Canada by Friday. Can you make that happen?",insight:'"Raising awareness" is not a PM ask — it\'s a status update with a shrug. When you escalate, make the ask explicit.',before:"There isn't any real action item, I think other than raising awareness, basically, you know, I'm looking for commitments from engineering now that we're nearing the end of the quarter."},
+{id:'t14',src:'transcript',cat:'confidence',occ:'knowledge',after:"I don't have that confirmed. My working assumption is yes — data gets lost in the merge. I'll verify with engineering and get you a clear answer before end of day.",insight:"State the assumption, name the gap, commit to closing it. Stop auditing your own reliability out loud.",before:"I'm trying to give you like some usable information. You have to take everything with a grain of salt, where someone told this to me, and they might be wrong."},
+{id:'t15',src:'transcript',cat:'confidence',occ:'mgr1on1',after:"(Nothing. Submit the goals. If Mike identifies gaps, address them. Don't audit your own work unprompted.)",insight:"Pre-emptive self-criticism is not humility — it's a bid for reassurance. It invites your manager to manage you.",before:"spent, you know, couple hours in one day to over doing that, so it's probably not as broad and deep as it needs to be."},
+{id:'t16',src:'transcript',cat:'ground',occ:'feedback',after:"Noted — I'll lead with the ask.",insight:"When your manager gives you live feedback, receive it, don't contextualize it. Agreement and adjustment is the move.",before:"I was trying to get David up to speed. [defense in response to live coaching]"},
+{id:'v2',src:'vocab',cat:'confidence',occ:'knowledge',after:"I don't have that number here. My working assumption is X — I'll confirm and follow up by EOD.",insight:'"I don\'t know" with no recovery reads as unprepared. Always attach a landing: assumption + when you\'ll have the answer.',before:"I'm not sure, I'd have to look into that."},
+{id:'v3',src:'vocab',cat:'confidence',occ:'status',after:"We're on track for [milestone] on [date]. One active risk: [X]. Here's how I'm managing it.",insight:"Vague progress reports create anxiety, not confidence. Every update needs a date, a risk, and evidence you're ahead of it — not just reassurance.",before:"Things are moving along, we've been making good progress."},
+{id:'v5',src:'vocab',cat:'presence',occ:'leadership',after:"I need one decision from this room: [X]. Here's the context that gets us there.",insight:"Leadership time is scarce. Open with the ask, not the agenda. If they know the destination, they'll absorb the context faster.",before:"So today I wanted to walk you through where we are and get your thoughts."},
+{id:'v6',src:'vocab',cat:'ground',occ:'defend',after:"That's not on the Q3 roadmap because [reason]. If it's a priority shift, tell me what comes off.",insight:"Soft acknowledgment without a clear position is an open invitation for pressure. State the constraint, name the tradeoff, force the real question.",before:"I understand that's important to you, and I definitely want to make sure we address your needs..."},
+{id:'v9',src:'vocab',cat:'ground',occ:'feedback',after:"Noted. Here's the context behind that call — [one sentence]. I'll factor it in going forward.",insight:"Immediate capitulation reads as insecure, not humble. One sentence of context preserves credibility without being defensive. Then close it.",before:"Oh yeah, no, that's totally fair, I should have done that differently, you're right."},
+{id:'v10',src:'vocab',cat:'presence',occ:'meeting',after:"Before we close: I need a decision on [X] today. My recommendation is [Y]. Does anyone disagree?",insight:'"Follow up async" is where decisions go to die. Meetings end with a named decision or a named owner and date. You own that close.',before:"I think we've covered a lot of ground. Let's follow up async and see where we land."},
+{id:'v13',src:'vocab',cat:'confidence',occ:'leadership',after:"These are directionally accurate as of [date]. I'm still validating [specific thing] — confirmed data by [date].",insight:"Blanket caveats destroy the entire finding. Specific caveats preserve credibility. Tell them what you trust and what you're still checking.",before:"These numbers might not be totally accurate, so take them with a grain of salt."},
+{id:'v15',src:'vocab',cat:'presence',occ:'crossfunc',after:"One sentence: [what it is]. Where we are: [status]. What I need from you: [specific ask].",insight:"Rambling context-dumps signal you haven't thought about what the other person needs to know. Orient in three sentences: what, where, need. Then stop.",before:"So yeah, we've been working on this for a while, it's kind of complicated, but basically what we're trying to do is..."},
+{id:'v16',src:'vocab',cat:'confidence',occ:'knowledge',after:"My instinct is [X]. I want to verify that — I'll get back to you today.",insight:"Narrating your own confusion loses the room. State your best current read, flag the verification, move on. The instinct is often right and worth saying.",before:"Hmm, that's a really good question, I hadn't really thought about that..."},
+{id:'v17',src:'vocab',cat:'ground',occ:'defend',after:"I have a different read. [State position.] Here's why. I want to make sure we're aligned before we move forward.",insight:"Cushioning a disagreement with agreement language muddies it. State the disagreement cleanly. Senior stakeholders respect clarity even when they don't agree.",before:"I see what you mean, that makes a lot of sense, I just wonder if maybe we could also consider..."},
+{id:'v18',src:'vocab',cat:'escalate',occ:'badnews',after:"We missed [milestone] by [X]. Root cause: [Y]. Here's what changes for the next one: [Z].",insight:'"Things came up" signals you\'re a victim. Root cause plus fix signals control. The explanation without the fix is just an excuse.',before:"Unfortunately we weren't able to hit the target, there were some things that came up."},
+{id:'v19',src:'vocab',cat:'presence',occ:'meeting',after:"I'm going to propose a goal for today: [X]. Does that match what everyone's here for?",insight:"Entering ambiguity without a proposed frame forces the group to start from zero. Proposing a frame — even a wrong one — accelerates alignment.",before:"So I guess we should figure out what we're trying to accomplish today and go from there."},
+{id:'v20',src:'vocab',cat:'presence',occ:'mgr1on1',after:"Here's what I'm taking away: [1, 2, 3]. I'll follow up on [X] by [date]. Does that match what you were expecting?",insight:"Vague closes waste the meeting. Reflecting takeaways confirms alignment, signals ownership, and gives your manager a correction point. Do it every time.",before:"Okay, yeah, I've got a lot to think about. Thanks for the feedback."},
+{id:'v23',src:'vocab',cat:'confidence',occ:'knowledge',after:"I don't have a confirmed date. My best estimate is [X]. I'll have a real number after [milestone].",insight:'"A lot of variables" is not an answer — it\'s an abdication. Give your best estimate, name what resolves it, commit to a date when you\'ll know more.',before:"It's hard to say at this point, there are a lot of variables."},
+{id:'v24',src:'vocab',cat:'ownership',occ:'leadership',after:"I see three paths. I recommend option two. Here's why. Happy to walk through the others if useful.",insight:"Presenting options without a recommendation forces the room to do your job. Your value as a PM is the recommendation, not the list. Lead with it.",before:"There are a few different ways we could go about this, each with their own pros and cons..."},
+{id:'v25',src:'vocab',cat:'presence',occ:'meeting',after:"Here's what we're building, why it matters, and what I need from each of you. Let's make sure we're locked before we close.",insight:"Explaining why you called the meeting is not a substitute for running it. State the output, not the intent. People follow someone who knows where they're going.",before:"I thought it would be good to get everyone together to align on what we're doing."},
+{id:'v28',src:'vocab',cat:'escalate',occ:'badnews',after:"[X] isn't happening by [date]. Here's why, here's the revised plan, and here's what I need from you.",insight:"Softening bad news with buildup signals anxiety. Lead with the fact, follow with the plan. Stakeholders can handle bad news — they can't handle uncertainty.",before:"So unfortunately, um, there's been a bit of a setback and we're not going to be able to..."},
+{id:'v30',src:'vocab',cat:'ownership',occ:'crossfunc',after:"Priority order this sprint is [1, 2, 3]. If anything conflicts with that, flag me before you make the call.",insight:'"Same page" is too soft to act on. Name the order explicitly and establish that you\'re the decision point for conflicts.',before:"I just want to make sure we're all on the same page about what's most important right now."},
+{id:'v32',src:'vocab',cat:'ownership',occ:'defend',after:"My read is [X]. I'm holding it loosely — here's what would change my mind.",insight:'"A lot of valid perspectives" is not a take — it\'s a dodge. Give your view. Naming what would change your mind signals rigor without locking you in.',before:"I mean, I think there are a lot of valid perspectives on this, it's hard to say."},
+{id:'v34',src:'vocab',cat:'ground',occ:'defend',after:"I know that feature. Here's why our approach is different, and where I think we win.",insight:'Agreeing the competitor is "interesting" concedes ground before you\'ve made your case. Respond with a position, not a compliment.',before:"Yeah, [competitor] is doing some interesting things, that's a good point."},
+{id:'v35',src:'vocab',cat:'presence',occ:'meeting',after:"That's worth discussing — let's put it in the parking lot. I want to make sure we close [original topic] first.",insight:"Letting a derail run signals you don't own the room. A parking lot is a commitment to address it, not a dismissal. Name it, protect the agenda.",before:"[Lets it go, hopes the conversation comes back]"},
+{id:'v36',src:'vocab',cat:'ownership',occ:'expectations',after:"Success means [specific metric] moves from [X] to [Y] by [date]. Everything else is secondary.",insight:"Vague success criteria guarantee ambiguous outcomes. If you can't name a number and a date, the goal isn't real yet.",before:"The goal of this project is to improve the user experience and drive engagement."},
+{id:'v37',src:'vocab',cat:'ground',occ:'defend',after:"That data came from [source] as of [date]. If you have a different number, let's compare methodology.",insight:"Preemptive concession on your own data destroys the finding. State the source with confidence and invite comparison.",before:"I mean, I think it's right, but I could be wrong, it came from [source]."},
+{id:'v39',src:'vocab',cat:'ownership',occ:'expectations',after:"This quarter I'm committing to [1, 2, 3]. If something isn't on this list, it's not getting done this quarter.",insight:"Hope is not a plan. Naming what's in scope also names what's out — that's the harder and more important half of the message.",before:"I'm hoping we can get a lot done this quarter and make some real progress."},
+{id:'v40',src:'vocab',cat:'escalate',occ:'badnews',after:"We hit [specific blocker] on [date]. I've resolved [X], [Y] is still open. New ETA is [date].",insight:'"More complicated than expected" is an excuse dressed as context. Name the blocker, name its status, give a new date. Every time.',before:"It's been a bit more complicated than we expected, there have been some blockers."},
+{id:'v43',src:'vocab',cat:'ownership',occ:'crossfunc',after:"I need a rough estimate for [feature] — T-shirt size is fine. I need it to plan the quarter.",insight:"Hedging the ask makes it easy to give a vague answer. Be specific about what precision you need and why.",before:"I was just wondering if you had any sense of roughly how long this might take?"},
+{id:'v44',src:'vocab',cat:'presence',occ:'leadership',after:"I'm proposing we do [X]. Here's the problem it solves, here's why now, here's what I need to get started.",insight:'"Wanted to get everyone\'s thoughts" frames you as a facilitator, not a leader. You\'re not crowdsourcing — you\'re proposing. Lead with the proposal.',before:"So I've been thinking about this idea and I wanted to get everyone's thoughts on it."},
+{id:'v45',src:'vocab',cat:'confidence',occ:'status',after:"Yes, with one caveat: [X] needs to resolve by [date] or the timeline shifts. I'm watching it.",insight:'"Cautiously optimistic" is not a status — it\'s a mood. Give the answer (yes/no), then give the condition.',before:"I think so, I mean, there are always uncertainties, but I'm cautiously optimistic."},
+{id:'v46',src:'vocab',cat:'ground',occ:'defend',after:"Based on [what we knew at the time], the right call was [X]. Here's what changed and what I'd do differently with today's information.",insight:"Vague retrospective defense sounds like excuses. Name the information you had, the logic, and what you'd change — that signals intellectual honesty.",before:"At the time it seemed like the right call, I think given what we knew it made sense."},
+{id:'v47',src:'vocab',cat:'ownership',occ:'meeting',after:"My role: I own the roadmap, the requirements, and the final call on scope. Come to me when there's a conflict or a decision that needs to be made.",insight:'"Sort of overseeing" cedes authority before the project starts. Name your role explicitly — what you own and what people should bring to you.',before:"I'll be sort of overseeing things from the product side and making sure we're all coordinated."},
+{id:'v49',src:'vocab',cat:'ownership',occ:'mgr1on1',after:"Three things: a decision on [X], a connection to [person], and air cover on [situation]. That's it.",insight:'"I\'ll let you know" wastes the question. Your manager is offering leverage — use it. A specific list signals you know what you need to move.',before:"I think I'm okay for now, I'll let you know if anything comes up."}
 ];
 
-const CAT_LABELS = {all:"All",presence:"Meeting presence",ownership:"Ownership",confidence:"Confidence",escalate:"Escalate",ground:"Hold ground"};
+let srcF='all',catF='all',occF='all',deck=[],idx=0,flipped=false;
 
-let deck = [...CARDS];
-let idx = 0;
-let flipped = false;
-let currentFilter = "all";
+function setSrc(el,v){srcF=v;document.querySelectorAll('#src-pills .fp').forEach(b=>b.classList.remove('active'));el.classList.add('active');reset()}
+function setCat(el,v){catF=v;document.querySelectorAll('#cat-pills .fp').forEach(b=>b.classList.remove('active'));el.classList.add('active');reset()}
+function setOcc(el,v){occF=v;document.querySelectorAll('#occ-pills .fp').forEach(b=>b.classList.remove('active'));el.classList.add('active');reset()}
+function reset(){idx=0;flipped=false;document.getElementById('card').classList.remove('flipped');buildDeck();render()}
+function buildDeck(){deck=CARDS.filter(c=>(srcF==='all'||c.src===srcF)&&(catF==='all'||c.cat===catF)&&(occF==='all'||c.occ===occF))}
+function flipCard(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped)}
+function go(dir){idx=Math.max(0,Math.min(deck.length-1,idx+dir));flipped=false;document.getElementById('card').classList.remove('flipped');render()}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}idx=0;flipped=false;document.getElementById('card').classList.remove('flipped');render()}
 
-function setFilter(cat) {
-  currentFilter = cat;
-  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-  document.querySelector(`[data-cat="${cat}"]`).classList.add("active");
-  deck = cat === "all" ? [...CARDS] : CARDS.filter(c => c.cat === cat);
-  idx = 0;
-  flipped = false;
-  document.getElementById("card").classList.remove("flipped");
-  render();
-}
-
-function flipCard() {
-  flipped = !flipped;
-  document.getElementById("card").classList.toggle("flipped", flipped);
-}
-
-function go(dir) {
-  idx = Math.max(0, Math.min(deck.length - 1, idx + dir));
-  flipped = false;
-  document.getElementById("card").classList.remove("flipped");
-  render();
-}
-
-function render() {
-  if (!deck.length) {
-    document.getElementById("card-wrap").style.display = "none";
-    document.querySelector(".nav").style.display = "none";
-    document.querySelector(".progress-track").style.display = "none";
-    document.getElementById("deck-label").textContent = "0 cards";
-    return;
+function render(){
+  const lbl=document.getElementById('deck-label');
+  const nav=document.querySelector('.nav');
+  const pt=document.querySelector('.progress-track');
+  const wrap=document.getElementById('card-wrap');
+  if(!deck.length){
+    lbl.textContent='0 cards';
+    wrap.innerHTML='<div class="empty-state">No cards match these filters.</div>';
+    nav.style.display='none';pt.style.display='none';return;
   }
-  document.getElementById("card-wrap").style.display = "block";
-  document.querySelector(".nav").style.display = "flex";
-  document.querySelector(".progress-track").style.display = "block";
-
-  const c = deck[idx];
-  document.getElementById("front-text").textContent = c.after;
-  document.getElementById("back-insight").textContent = c.insight;
-  document.getElementById("back-said").textContent = `"${c.before}"`;
-
-  const catEl = document.getElementById("front-cat");
-  catEl.textContent = CAT_LABELS[c.cat];
-  catEl.className = "cat-tag cat-" + c.cat;
-
-  document.getElementById("counter").textContent = `${idx + 1} / ${deck.length}`;
-  document.getElementById("deck-label").textContent = `${deck.length} cards`;
-  document.getElementById("progress").style.width = `${((idx + 1) / deck.length) * 100}%`;
-  document.getElementById("btn-prev").disabled = idx === 0;
-  document.getElementById("btn-next").disabled = idx === deck.length - 1;
+  if(!document.getElementById('card')){location.reload();return}
+  nav.style.display='flex';pt.style.display='block';
+  lbl.textContent=deck.length+' cards';
+  const c=deck[idx];
+  const isV=c.src==='vocab';
+  document.getElementById('cf').className='card-face card-front '+(isV?'vocab':'transcript');
+  document.getElementById('cb').className='card-face card-back '+(isV?'vocab':'transcript');
+  document.getElementById('front-text').textContent=c.after;
+  document.getElementById('back-insight').textContent=c.insight;
+  document.getElementById('back-said').textContent='\u201c'+c.before+'\u201d';
+  const ce=document.getElementById('front-cat');
+  ce.textContent=CAT[c.cat];ce.className='cat-tag cat-'+c.cat;
+  document.getElementById('front-occ').textContent=OCC[c.occ];
+  const se=document.getElementById('front-src');
+  se.className='src-badge '+(isV?'src-vocab':'src-transcript');
+  se.textContent=isV?'vocabulary':'transcript';
+  document.getElementById('counter').textContent=(idx+1)+' / '+deck.length;
+  document.getElementById('progress').style.width=((idx+1)/deck.length*100)+'%';
+  document.getElementById('btn-prev').disabled=idx===0;
+  document.getElementById('btn-next').disabled=idx===deck.length-1;
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowRight") go(1);
-  else if (e.key === "ArrowLeft") go(-1);
-  else if (e.key === " ") { e.preventDefault(); flipCard(); }
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')go(1);
+  else if(e.key==='ArrowLeft')go(-1);
+  else if(e.key===' '){e.preventDefault();flipCard();}
+  else if(e.key==='s')shuffle();
 });
 
-render();
+buildDeck();render();
 </script>
 </body>
 </html>
